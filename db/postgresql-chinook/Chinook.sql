@@ -23854,4 +23854,4 @@ EXECUTE PROCEDURE "last_updated"();
 -- ----------------------------
 ALTER TABLE "film_actor" ADD PRIMARY KEY ("actor_id", "film_id");
 
-COMMIT;e
+COMMIT;
