@@ -2,4 +2,5 @@
 
 The following collections demonstrate the process of creation of services for various databases alongwith their ancilliary services.
 
-- **[postgres-chinook](./postgresql-chinook/)** -- A postgres image with the Chinook database preloaded
+- **[Postgres-sample](./postgresql-sample/)** -- A postgres image with a sample database preloaded
+- **[Postgres-chinook](./postgresql-chinook/)** -- A postgres image with the Chinook database preloaded
