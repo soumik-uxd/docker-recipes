@@ -28,7 +28,7 @@ RUN chmod a+w /home/conf/*.env
 RUN chmod a+w /var/log/chinook-load.log
 
 # Superuser password for the postgresql. Uncomment only for local use
-ENV POSTGRES_PASSWORD=adm1n
+#ENV POSTGRES_PASSWORD=adm1n
 
 # Set schema name for the data to be bound to
 ENV DB_SCHEMA=main
