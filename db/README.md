@@ -1,5 +1,5 @@
-# docker-recipes
+# Docker recipes for databases
 
-This repository has all my favorite docker setups, powered by docker compose.
+The following collections demonstrate the process of creation of services for various databases alongwith their ancilliary services.
 
-- **postgres-chinook** -- A postgres image with the Chinook database preloaded
+- **[postgres-chinook](./postgresql-chinook/)** -- A postgres image with the Chinook database preloaded
