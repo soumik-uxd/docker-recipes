@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux
+set -eu
 
 # Load the env variables for username and passwords
 source /home/conf/db.env
