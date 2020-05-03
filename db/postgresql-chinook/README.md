@@ -34,12 +34,12 @@ docker run -d --name <CONTAINER_NAME> \
     -e POSTGRES_PASSWORD=<POSTGRES_PASSWORD> \
     -p 5432:5432 <IMAGE_TAG_NAME>
 ```
-**Note:** The environment variable `DB_SCHEMA` to be set before the init script loaded to `/docker-entrypoint-initdb.d/` can be started. The value in Dockerfile is set to `main`. If you wish a different schema name it can be overriden using the extra `SCHEMA_NAME=<SCHEMA_NAME>` for environment variables in the `docker run` command like below.
+**Note:** The environment variable `DB_SCHEMA` to be set before the init script loaded to `/docker-entrypoint-initdb.d/` can be started. The value in Dockerfile is set to `main`. If you wish a different schema name it can be overriden using the extra `DB_SCHEMA=<SCHEMA_NAME>` for environment variables in the `docker run` command like below.
 ```bash
 docker run -d --name <CONTAINER_NAME> \
     -v <DATA_VOLUME_NAME>:/var/lib/postgresql/data \
     -e POSTGRES_PASSWORD=<POSTGRES_PASSWORD> \
-        SCHEMA_NAME=<SCHEMA_NAME> \
+    -e DB_SCHEMA=<SCHEMA_NAME> \
     -p 5432:5432 <IMAGE_TAG_NAME>
 ``` 
 
