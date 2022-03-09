@@ -9,7 +9,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     curl \
     gnupg \
     libsnappy-dev \
-    netcat-traditional \
+    netcat \
     net-tools \
     openjdk-17-jre \
     && rm -rf /var/lib/apt/lists/*
