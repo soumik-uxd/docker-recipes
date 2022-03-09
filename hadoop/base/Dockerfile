@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim
+FROM openjdk:11.0.10-jre-buster
 
 LABEL author.name="Soumik Das"
 LABEL author.email="soumik.das@outlook.de" 
@@ -11,10 +11,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     libsnappy-dev \
     netcat \
     net-tools \
-    openjdk-17-jre \
     && rm -rf /var/lib/apt/lists/*
-
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 ENV HADOOP_VERSION 3.3.1
 ENV HADOOP_URL https://dlcdn.apache.org/hadoop/common/hadoop-${HADOOP_VERSION}
