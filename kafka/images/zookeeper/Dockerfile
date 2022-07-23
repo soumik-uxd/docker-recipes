@@ -26,7 +26,7 @@ RUN tar -xzf apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.gz -C /opt && \
     cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg && \
     rm -f apache-zookeeper-${ZOOKEEPER_VERSION}-bin.tar.*
 
-EXPOSE 2181 2888 3888 8080
+EXPOSE 2181 2888 3888
 
 ENTRYPOINT ["/opt/zookeeper/bin/zkServer.sh"]
 CMD ["start-foreground"]
