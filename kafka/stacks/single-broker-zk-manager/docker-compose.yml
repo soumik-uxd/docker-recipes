@@ -13,7 +13,7 @@
 #                be named as testing.
 # - zookeeper: 2181
 #      kafka: 9081
-version: "3.3"
+version: "3.7"
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:${CONFLUENT_PLATFORM_VERSION:-7.2.1}
@@ -30,7 +30,9 @@ services:
     volumes:
       - zk-data:/var/lib/zookeeper/data
       - zk-logs:/var/lib/zookeeper/log
-    
+    networks:
+      - kafka-net
+
   kafka:
     image: confluentinc/cp-kafka:${CONFLUENT_PLATFORM_VERSION:-7.2.1}
     hostname: kafka
@@ -38,12 +40,13 @@ services:
     ports:
       - "9092:9092"
       - "9999:9999"
+      - "29092:29092"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -52,6 +55,8 @@ services:
       KAFKA_JMX_HOSTNAME: ${DOCKER_HOST_IP:-127.0.0.1}
     depends_on:
       - zookeeper
+    networks:
+      - kafka-net
     volumes:
       - kafka-data:/var/lib/kafka/data
 
@@ -66,6 +71,8 @@ services:
     environment:
       ZK_HOSTS: zookeeper:2181
       APPLICATION_SECRET: randomSecret
+    networks:
+      - kafka-net
     ports:
       - "9000:9000"
 
@@ -82,6 +89,8 @@ services:
       - kafka-manager
       - kafka
       - zookeeper
+    networks:
+      - kafka-net
     command: /bin/bash /kafka-cluster-init.sh
     volumes:
       - "./kafka-cluster-init.sh:/kafka-cluster-init.sh"
@@ -91,3 +100,7 @@ volumes:
   zk-logs:
   kafka-data:
   
+networks:
+  kafka-net:
+    name: kafka-net
+    driver: bridge
