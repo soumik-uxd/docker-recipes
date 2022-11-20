@@ -1,4 +1,4 @@
-ARG TAG=11-alpine
+ARG TAG=12-alpine
 
 FROM postgres:${TAG}
 
@@ -8,9 +8,9 @@ LABEL maintainer="Soumik Das -- soumik.uxd@gmail.com"
 LABEL source_url=""
 
 # Create dirs and log files
-RUN mkdir -p /home/data
-RUN mkdir -p /home/conf
-RUN touch /var/log/chinook-load.log
+RUN mkdir -p /home/data && \
+    mkdir -p /home/conf && \
+    touch /var/log/chinook-load.log
 
 # Load env and sql files
 COPY *.env /home/conf/
@@ -20,12 +20,12 @@ COPY *.sql /home/data/
 COPY load-db.sh /docker-entrypoint-initdb.d/load-db.sh
 
 # Provide necessary permissions
-RUN chmod a+x /docker-entrypoint-initdb.d/load-db.sh
-RUN chmod a+rwx /home/data
-RUN chmod a+rwx /home/conf
-RUN chmod a+w /home/data/*.sql
-RUN chmod a+w /home/conf/*.env
-RUN chmod a+w /var/log/chinook-load.log
+RUN chmod a+x /docker-entrypoint-initdb.d/load-db.sh && \
+    chmod a+rwx /home/data && \
+    chmod a+rwx /home/conf && \
+    chmod a+w /home/data/*.sql && \
+    chmod a+w /home/conf/*.env && \
+    chmod a+w /var/log/chinook-load.log
 
 # Superuser password for the postgresql. Uncomment only for local use
 #ENV POSTGRES_PASSWORD=adm1n
