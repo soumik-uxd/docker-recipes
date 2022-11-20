@@ -1,0 +1,41 @@
+version: "3.7"
+services:
+  mongo-server:
+    image: mongo:6.0.2-focal
+    container_name: mongoserver
+    ports:
+      - 27017:27017
+      - 27018:27018
+    environment:
+      - MONGO_INITDB_DATABASE=test
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d # Init script
+    networks:
+      - mongo_net
+
+  mongo-client:
+    image: mongo-express:latest
+    container_name: mongo-client
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin
+      ME_CONFIG_MONGODB_SERVER: mongoserver
+      ME_CONFIG_MONGODB_PORT: "27017"
+    ports:
+      - 8081:8081
+    networks:
+      - mongo_net
+    depends_on:
+      - mongo-server
+    command: ["/wait-for-it.sh", "mongoserver:27017", "--", "tini", "--", "/docker-entrypoint.sh"]
+    volumes:
+      - type: bind
+        source: ./wait-for-it.sh
+        target: /wait-for-it.sh
+
+networks:
+  mongo_net:
+    name: mongo_net
+    driver: bridge
