@@ -4,7 +4,7 @@
 #   default: 7.2.1
 #   reference: https://hub.docker.com/u/confluentinc/
 # Ports:
-# - description: Single kafka broker with a singular zookeeper, and a kafdrop as a UI
+# - description: Single kafka broker with a singular zookeeper, and a provectus as a UI
 # - zookeeper: 2181
 #      kafka: 9092
 version: "3.7"
