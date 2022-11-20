@@ -1,0 +1,11 @@
+{
+    "name" : "wikimedia-source-connector",
+    "config": {
+        "tasks.max" : 1,
+        "connector.class": "io.github.soumikuxd.kafkawikimediaconnector.WikiMediaConnector",
+        "topic": "wikimedia.recentchange.connect",
+        "url" : "https://stream.wikimedia.org/v2/stream/recentchange",
+        "errors.tollerance" : "all",
+        "errors.deadletterqueue.topic.name" :"wikimedia.connect.dlq"
+    }
+}
