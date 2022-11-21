@@ -1,3 +1,7 @@
+# WARNING: This docker-compose.yml is only for testing purpose.
+# Ports:
+# - description: Single mongo server with a CLI client container.
+# - mongo-server: 27017, 27018
 version: "3.7"
 services:
   mongo-server:
@@ -17,7 +21,7 @@ services:
 
   mongo-client:
     # build will get tagged with 'image'
-    build: ./mongoclient
+    build: ../../mongoclient-cli
     image: mongoclient
     container_name: mongoclient
     environment:
