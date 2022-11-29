@@ -1,0 +1,34 @@
+version: "3.7"
+   
+services:
+  mongo-server:
+    image: mongo:6.0.2-focal
+    container_name: mongoserver
+    ports:
+      - 27017:27017
+      - 27018:27018
+    environment:
+      - MONGO_INITDB_DATABASE=admin
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d  # Init scripts
+      - ./sampledata:/tmp/data/sampledata     # Db data
+    networks:
+      - mongo_net
+
+  mongo-client:
+    image: mongoclient/mongoclient:4.0.0
+    container_name: mongoclient
+    hostname: mongoclient
+    ports:
+      - 3300:3000
+    depends_on:
+      - mongo-server
+    networks:
+      - mongo_net
+
+networks:
+  mongo_net:
+    name: mongo_net
+    driver: bridge
