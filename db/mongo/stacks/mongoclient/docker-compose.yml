@@ -1,8 +1,5 @@
-# WARNING: This docker-compose.yml is only for testing purpose.
-# Ports:
-# - description: Single mongo server with a web user interface.
-# - mongo-server: 27017, 27018
 version: "3.7"
+   
 services:
   mongo-server:
     image: mongo:6.0.2-focal
@@ -29,6 +26,9 @@ services:
       - mongo-server
     networks:
       - mongo_net
+    command: ["/wait-for-it.sh", "mongoserver:27017", "--", "tini", "--", "/docker-entrypoint.sh"]
+    volumes:
+      - ./wait-for-it.sh:/wait-for-it.sh
 
 networks:
   mongo_net:
