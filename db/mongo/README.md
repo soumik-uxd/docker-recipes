@@ -15,5 +15,7 @@ Here one can find all the images and stacks related to [MongoDB](https://www.mon
 | Section     | Description |
 | ----------- | ----------- |
 | **[MongoClient CLI](./mongoclient-cli/)**      | Single mongo server with a CLI client container.   |
-| **[MongoClient Express Client](./mongoclient-express-client/)**      | Single mongo server with a [web admin interface](https://github.com/mongo-express/mongo-express)   |
-| **[MongoClient Express Client](./mongoclient-express-client/)**      | Single mongo server with a [web user interface](https://hub.docker.com/r/mongoclient/mongoclient/)   |
+| **[Mongo-Express Client](./mongoclient-express-client/)**      | Single mongo server with a [web admin interface](https://github.com/mongo-express/mongo-express)   |
+| **[MongoClient](./mongoclient-express-client/)**      | Single mongo server with a [web user interface](https://hub.docker.com/r/mongoclient/mongoclient/)   |
+| **[Mongo-Express Client Sample Data](./mongoclient-express-client/)**      | Single mongo server with a [web admin interface](https://github.com/mongo-express/mongo-express) pre-loaded with [sample data](https://www.mongodb.com/developer/products/atlas/atlas-sample-datasets/#sql-atlas-sample-data-deeper-dive)  |
+| **[MongoClient Sample Data](./mongoclient-express-client/)**      | Single mongo server with a [web user interface](https://hub.docker.com/r/mongoclient/mongoclient/) pre-loaded with [sample data](https://www.mongodb.com/developer/products/atlas/atlas-sample-datasets/#sql-atlas-sample-data-deeper-dive)  |
