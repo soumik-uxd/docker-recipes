@@ -14,7 +14,7 @@ The mongo-express client should then be available at `http://localhost:8081/`.
 
 ![Mongo-Express Client App Screenshot](./Mongo-Express.png?raw=true "Mongo-Express Client App Screenshot")
 
-When finished please stop/remove the container using `docker-compose down`. The environment variables `MONGO_SERVER`, `MONGO_INITDB_DATABASE`, `MONGO_INITDB_ROOT_USERNAME` and `MONGO_INITDB_ROOT_PASSWORD`. Can be adjusted in the `docker-compose.yml` file.  
+When finished please stop/remove the container using `docker-compose down`. The environment variables `MONGO_SERVER`, `MONGO_INITDB_DATABASE`, `MONGO_INITDB_ROOT_USERNAME` and `MONGO_INITDB_ROOT_PASSWORD`, can be adjusted in the `docker-compose.yml` file.  
 
 ## Sample Datasets.
 
