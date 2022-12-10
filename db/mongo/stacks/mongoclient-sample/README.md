@@ -1,4 +1,4 @@
-# Mongo-Express-Sample
+# Mongo-Client-Sample
 This stack creates a single MongoDB server instance, and then loads the [sample dataset](https://www.mongodb.com/developer/products/atlas/atlas-sample-datasets/#sql-atlas-sample-data-deeper-dive) from MongoDB (downloaded from [here](https://github.com/neelabalan/mongodb-sample-dataset)), and with a client container where the [mongoclient](https://github.com/nosqlclient/nosqlclient) can be used to connect to the server. 
 
 ## Usage.
