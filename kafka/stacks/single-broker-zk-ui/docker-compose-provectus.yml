@@ -6,7 +6,8 @@
 # Ports:
 # - description: Single kafka broker with a singular zookeeper, and a provectus as a UI
 # - zookeeper: 2181
-#      kafka: 9092
+#   kafka: 9092
+#   ui: 9000
 version: "3.7"
 services:
   zookeeper:
