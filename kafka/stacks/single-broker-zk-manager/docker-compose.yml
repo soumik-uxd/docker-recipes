@@ -12,7 +12,8 @@
 #                with the cluster details running as services here. In case a name isn't próvided at the start the cluster will 
 #                be named as testing.
 # - zookeeper: 2181
-#      kafka: 9092
+#   kafka: 9092
+#   manager: 9000  
 version: "3.7"
 services:
   zookeeper:
