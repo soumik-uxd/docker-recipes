@@ -1,4 +1,4 @@
-# Single Kafka Broker  single zookeeper
+# Single Kafka Broker & single zookeeper
 
 The docker-compose file will start a stack of services i.e. a single [Zookeeer](https://zookeeper.apache.org/) instance and a Kafka broker,
 
