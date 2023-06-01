@@ -1,4 +1,4 @@
-# Postgres-chinook
+# Postgres-Sample
 
 Creates a postgres container with a [Sample Database](https://www.postgresqltutorial.com/postgresql-sample-database/) pre-loaded. 
 ## How To
