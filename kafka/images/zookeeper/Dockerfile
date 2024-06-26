@@ -1,9 +1,12 @@
-FROM openjdk:11-jre-slim
+# WARNING: This Dockerfile is only for testing purpose. 
+# Please use the official image from https://hub.docker.com/_/zookeeper for production builds
+
+FROM eclipse-temurin:17-jre-jammy
 
 LABEL version="0.1"
 LABEL maintainer="Soumik Das -- soumik.uxd@gmail.com"
 
-ARG ZOOKEEPER_VERSION=3.6.3
+ARG ZOOKEEPER_VERSION=3.9.2
 
 ENV ZOOKEEPER_WORKDIR=/opt/zookeeper
 ENV ZOOKEEPER_CONF_DIR=${ZOOKEEPER_WORKDIR}/conf
