@@ -17,7 +17,7 @@
 version: "3.7"
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:${CONFLUENT_PLATFORM_VERSION:-7.2.1}
+    image: confluentinc/cp-zookeeper:${CONFLUENT_PLATFORM_VERSION:-7.6.1}
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -35,7 +35,7 @@ services:
       - kafka-net
 
   kafka:
-    image: confluentinc/cp-kafka:${CONFLUENT_PLATFORM_VERSION:-7.2.1}
+    image: confluentinc/cp-kafka:${CONFLUENT_PLATFORM_VERSION:-7.6.1}
     hostname: kafka
     container_name: kafka
     ports:
@@ -63,7 +63,7 @@ services:
       - kafka-data:/var/lib/kafka/data
   
   schema-registry:
-    image: confluentinc/cp-schema-registry:${CONFLUENT_PLATFORM_VERSION:-7.2.1}
+    image: confluentinc/cp-schema-registry:${CONFLUENT_PLATFORM_VERSION:-7.6.1}
     hostname: schema-registry
     container_name: schema-registry
     ports:
@@ -79,7 +79,7 @@ services:
       - kafka-net
 
   kafka-connect:
-    image: confluentinc/cp-kafka-connect:${CONFLUENT_PLATFORM_VERSION:-7.2.1}
+    image: confluentinc/cp-kafka-connect:${CONFLUENT_PLATFORM_VERSION:-7.6.1}
     hostname: kafka-connect
     container_name: kafka-connect
     ports:
