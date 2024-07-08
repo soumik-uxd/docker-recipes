@@ -4,7 +4,9 @@
 #   default: latest
 #   reference: https://hub.docker.com/u/confluentinc/
 # Ports:
-# - description: Multiple kafka broker with a singular zookeeper
+# - description: Multiple kafka broker with a singular zookeeper, and a kafka manager on top, the kafka manager is initialized
+#                with the cluster details running as services here. In case a name isn't próvided at the start the cluster will 
+#                be named as testing.
 # - zookeeper: 2181
 #      kafka: 9092, 9093, 9094
 version: "3.7"
@@ -117,6 +119,41 @@ services:
         - zookeeper
       networks:
         - kafka-net 
+        
+  kafka-manager:
+    image: hlebalbau/kafka-manager:stable
+    hostname: kafka-manager
+    container_name: kafka-manager
+    depends_on:
+      - kafka
+      - zookeeper
+    command: -Dconfig.file=/kafka-manager/conf/application.conf -Dapplication.home=/kafkamanager
+    environment:
+      ZK_HOSTS: zookeeper:2181
+      APPLICATION_SECRET: randomSecret
+    networks:
+      - kafka-net
+    ports:
+      - "9000:9000"
+
+  manager-cluster-init:
+    image: ellerbrock/alpine-bash-curl-ssl
+    restart: "no"
+    container_name: init
+    environment:
+      KAFKA_MANAGER_HOST: kafka-manager:9000
+      KAFKA_CLUSTER_NAME: ${KAFKA_CLUSTER_NAME:-testing}
+      KAFKA_VERSION: ${KAFKA_VERSION:-2.4.0}
+      ZK_HOSTS: zookeeper:2181
+    depends_on:
+      - kafka-manager
+      - kafka
+      - zookeeper
+    networks:
+      - kafka-net
+    command: /bin/bash /kafka-cluster-init.sh
+    volumes:
+      - "./kafka-cluster-init.sh:/kafka-cluster-init.sh"
 
 volumes:
   zk-data:
