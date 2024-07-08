@@ -11,7 +11,7 @@ The docker-compose file will start a stack of services i.e. a single [Zookeeer](
 ```bash
 docker-compose up -d
 ```
-The zookeeper instance should start at port 2181, the kafka broker at ports 9092, 9093 and 9094 respectively.
+The zookeeper instance should start at ports 2181, the kafka broker at ports 9092, 9093 and 9094 respectively.
 
 2. Now we can create a topic using the kafka cli inside the broker
 ```bash
