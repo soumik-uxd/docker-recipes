@@ -1,0 +1,83 @@
+# WARNING: This docker-compose.yml is only for testing purpose.
+# Parameters:
+# - name: KAFKA_VERSION
+#   default: latest
+#   reference: https://hub.docker.com/u/confluentinc/
+# Ports:
+# - description: Single kafka broker with a singular zookeeper
+# - zookeeper: 2181
+#      kafka: 9092
+version: "3.7"
+services:
+  zookeeper:
+    image: zookeeper:${KAFKA_VERSION:-latest}
+    hostname: zookeeper
+    container_name: zookeeper
+    build:
+      context: ../../../images/zookeeper
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    environment: 
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SERVER_ID:  1
+      ZOOKEEPER_SERVERS: zookeeper:2888:3888
+    volumes:
+      - zk-data:/opt/zookeeper/data
+      - zk-logs:/opt/zookeeper/log
+    networks:
+      - kafka-net
+
+  kafka:
+    image: kafka-broker:${KAFKA_VERSION:-latest}
+    hostname: kafka
+    container_name: kafka
+    build:
+      context: ../../../images/kafka-broker
+      dockerfile: Dockerfile
+    ports:
+      - "9092:9092"
+      - "9999:9999"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_HOSTNAME: kafka
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote=true
+        -Djava.rmi.server.hostname=kafka
+        -Dcom.sun.management.jmxremote.local.only=false 
+        -Dcom.sun.management.jmxremote.rmi.port=9999 
+        -Dcom.sun.management.jmxremote.port=9999 
+        -Dcom.sun.management.jmxremote.authenticate=false 
+        -Dcom.sun.management.jmxremote.ssl=false"
+      KAFKA_LOG_RETENTION_HOURS: 12
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 3600000
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka-net
+    volumes:
+      - kafka-data:/opt/kafka/data
+      - kafka-logs:/opt/kafka/logs
+
+volumes:
+  zk-data:
+  zk-logs:
+  kafka-data:
+  kafka-logs:
+  
+networks:
+  kafka-net:
+    name: kafka-net
+    driver: bridge

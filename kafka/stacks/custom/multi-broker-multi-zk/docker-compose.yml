@@ -1,0 +1,165 @@
+# WARNING: This docker-compose.yml is only for testing purpose.
+# Parameters:
+# - name: KAFKA_VERSION
+#   default: latest
+#   reference: https://hub.docker.com/u/confluentinc/
+# Ports:
+# - description: Multiple kafka brokers with multiple zookeepers
+# - zookeeper: 2181, 2182, 2183
+#      kafka: 9092, 9093, 9094
+version: "3.7"
+services:
+  zookeeper1:
+    image: zookeeper:${KAFKA_VERSION:-latest}
+    hostname: zookeeper1
+    container_name: zookeeper1
+    build:
+      context: ../../../images/zookeeper
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    environment: 
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SERVER_ID:  1
+      ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
+    networks:
+      - kafka-net
+
+  zookeeper2:
+    image: zookeeper:${KAFKA_VERSION:-latest}
+    hostname: zookeeper2
+    container_name: zookeeper2
+    build:
+      context: ../../../images/zookeeper
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "2182:2182"
+    environment: 
+      ZOOKEEPER_CLIENT_PORT: 2182
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SERVER_ID:  2
+      ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
+    networks:
+      - kafka-net
+
+  zookeeper3:
+    image: zookeeper:${KAFKA_VERSION:-latest}
+    hostname: zookeeper3
+    container_name: zookeeper3
+    build:
+      context: ../../../images/zookeeper
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "2183:2183"
+    environment: 
+      ZOOKEEPER_CLIENT_PORT: 2183
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SERVER_ID:  3
+      ZOOKEEPER_SERVERS: zookeeper1:2888:3888;zookeeper2:2888:3888;zookeeper3:2888:3888
+    networks:
+      - kafka-net
+
+  kafka1:
+    image: kafka-broker:${KAFKA_VERSION:-latest}
+    hostname: kafka1
+    container_name: kafka1
+    build:
+      context: ../../../images/kafka-broker
+      dockerfile: Dockerfile
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:29092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_LOG_RETENTION_HOURS: 12
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 3600000
+      KAFKA_PORT: 9092
+    restart: always
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    networks:
+      - kafka-net
+
+  kafka2:
+      image: kafka-broker:${KAFKA_VERSION:-latest}
+      hostname: kafka2
+      container_name: kafka2
+      build:
+        context: ../../../images/kafka-broker
+        dockerfile: Dockerfile
+      ports:
+        - "9093:9093"
+        - "29093:29093"
+      environment:
+        KAFKA_BROKER_ID: 2
+        KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
+        KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka2:29093,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9093
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+        KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+        KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+        KAFKA_LOG_RETENTION_HOURS: 12
+        KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 3600000
+        KAFKA_PORT: 9093
+      restart: always
+      depends_on:
+        - zookeeper1
+        - zookeeper2
+        - zookeeper3
+      networks:
+        - kafka-net
+
+  kafka3:
+      image: kafka-broker:${KAFKA_VERSION:-latest}
+      hostname: kafka3
+      container_name: kafka3
+      build:
+        context: ../../../images/kafka-broker
+        dockerfile: Dockerfile
+      ports:
+        - "9094:9094"
+        - "29094:29094"
+      environment:
+        KAFKA_BROKER_ID: 3
+        KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
+        KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka3:29094,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9094
+        KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+        KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+        KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+        KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+        KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+        KAFKA_LOG_RETENTION_HOURS: 12
+        KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 3600000
+        KAFKA_PORT: 9094
+      restart: always
+      depends_on:
+        - zookeeper1
+        - zookeeper2
+        - zookeeper3        
+      networks:
+        - kafka-net 
+
+networks:
+  kafka-net:
+    name: kafka-net
+    driver: bridge

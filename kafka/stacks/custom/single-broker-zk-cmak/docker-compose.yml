@@ -1,0 +1,125 @@
+# WARNING: This docker-compose.yml is only for testing purpose.
+# Parameters:
+# - name: KAFKA_VERSION
+#   default: latest
+#   reference: https://hub.docker.com/u/confluentinc/
+# - name: CMAK_VERSION
+#   default: latest
+# Ports:
+# - description: Single kafka broker with a singular zookeeper, and CAMK (or kafka manager) on top, the kafka manager is initialized
+#                with the cluster details running as services here. In case a name isn't próvided at the start the cluster will 
+#                be named as testing.
+# - zookeeper: 2181
+#      kafka: 9092
+version: "3.7"
+services:
+  zookeeper:
+    image: zookeeper:${KAFKA_VERSION:-latest}
+    hostname: zookeeper
+    container_name: zookeeper
+    build:
+      context: ../../../images/zookeeper
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "2181:2181"
+    environment: 
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SERVER_ID:  1
+      ZOOKEEPER_SERVERS: zookeeper:2888:3888
+    volumes:
+      - zk-data:/opt/zookeeper/data
+      - zk-logs:/opt/zookeeper/log
+    networks:
+      - kafka-net
+
+  kafka:
+    image: kafka-broker:${KAFKA_VERSION:-latest}
+    hostname: kafka
+    container_name: kafka
+    build:
+      context: ../../../images/kafka-broker
+      dockerfile: Dockerfile
+    ports:
+      - "9092:9092"
+      - "9999:9999"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_JMX_PORT: 9999
+      KAFKA_JMX_HOSTNAME: kafka
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote=true
+        -Djava.rmi.server.hostname=kafka
+        -Dcom.sun.management.jmxremote.local.only=false 
+        -Dcom.sun.management.jmxremote.rmi.port=9999 
+        -Dcom.sun.management.jmxremote.port=9999 
+        -Dcom.sun.management.jmxremote.authenticate=false 
+        -Dcom.sun.management.jmxremote.ssl=false"
+      KAFKA_LOG_RETENTION_HOURS: 12
+      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 3600000
+    restart: always
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka-net
+    volumes:
+      - kafka-data:/opt/kafka/data
+      - kafka-logs:/opt/kafka/logs
+
+  kafka-manager:
+    image: cmak:${CMAK_VERSION:-latest}
+    hostname: kafka-manager
+    container_name: kafka-manager
+    build:
+      context: ../../../images/cmak
+      dockerfile: Dockerfile
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      ZK_HOSTS: zookeeper:2181
+      APPLICATION_SECRET: randomSecret
+    networks:
+      - kafka-net
+    ports:
+      - "9000:9000"
+
+  manager-cluster-init:
+    image: ellerbrock/alpine-bash-curl-ssl
+    restart: "no"
+    container_name: init
+    environment:
+      KAFKA_MANAGER_HOST: kafka-manager:9000
+      KAFKA_CLUSTER_NAME: ${KAFKA_CLUSTER_NAME:-testing}
+      KAFKA_VERSION: ${KAFKA_VERSION:-2.4.0}
+      ZK_HOSTS: zookeeper:2181
+    depends_on:
+      - kafka-manager
+      - kafka
+      - zookeeper
+    networks:
+      - kafka-net
+    command: /bin/bash /kafka-cluster-init.sh
+    volumes:
+      - "./kafka-cluster-init.sh:/kafka-cluster-init.sh"
+
+volumes:
+  zk-data:
+  zk-logs:
+  kafka-data:
+  kafka-logs:
+  
+networks:
+  kafka-net:
+    name: kafka-net
+    driver: bridge
