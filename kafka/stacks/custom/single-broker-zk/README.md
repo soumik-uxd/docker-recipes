@@ -33,5 +33,5 @@ docker exec -it kafka bash -c "seq 42 | kafka-console-producer --request-require
 docker exec -it kafka kafka-topics --bootstrap-server kafka:9092 --topic test --describe 
 ```
 
-When finished, please stop/remove the containers using `docker-compose down`. 
+When finished, please stop/remove the containers using `docker-compose down --volumes`. 
 
