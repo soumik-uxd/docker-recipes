@@ -1,0 +1,105 @@
+FROM centos:7
+LABEL author AnujAroshA
+RUN yum -y update
+RUN yum -y install vim
+RUN yum -y install nc
+RUN yum -y install lsof
+RUN yum -y install java-11-openjdk-devel
+RUN echo 'JAVA_HOME="/usr/lib/jvm/java-11-openjdk-11.0.6.10-1.el7_7.x86_64/bin/java"' (2 greater than signs) ~/.bashrc
+RUN source ~/.bashrc
+COPY Zookeeper /opt/Zookeeper
+WORKDIR /opt/Zookeeper
+
+
+Commands I used :
+-------------------------------- 
+
+* Go inside a directory (Ex. Desktop)
+cd Desktop
+
+* Creating a new directory (Ex. Docker) 
+mkdir Docker
+
+* Download zookeeper source from command line
+curl https://archive.apache.org/dist/zooke... -o zookeeper-3.4.9.tar.gz 
+
+* List directory content with details
+ls -laF
+
+* Extract a tar file 
+tar -xvf zookeeper-3.4.9.tar.gz
+
+* Remove a file
+rm -rf zookeeper-3.4.9.tar.gz 
+
+* Copy a file
+cp zoo_sample.cfg zoo.cfg
+
+* Edit a file using vim editor
+vim zoo.cfg
+
+* Change the permission of a file
+chmod 755 Dockerfile
+
+* List locally available docker images
+docker images 
+
+* Build docker image using a Dockerfile existing in the current location 
+docker build -t anujarosha/cent_zoo_parent:1 . 
+
+* List available docker containers
+docker ps -a
+
+* Create a docker container
+docker run -d --name zoo1 -p 2600:2600 anujarosha/cent_zoo_parent:1 bash -c 'yum install -y httpd && apachectl -D FOREGROUND' 
+
+* Start an interactive session with a running container 
+docker exec -it 3772ecfb5524 /bin/bash
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+env from official image
+
+ENV ZOO_CONF_DIR=/conf \
+    ZOO_DATA_DIR=/data \
+    ZOO_DATA_LOG_DIR=/datalog \
+    ZOO_LOG_DIR=/logs \
+    ZOO_TICK_TIME=2000 \
+    ZOO_INIT_LIMIT=5 \
+    ZOO_SYNC_LIMIT=2 \
+    ZOO_AUTOPURGE_PURGEINTERVAL=0 \
+    ZOO_AUTOPURGE_SNAPRETAINCOUNT=3 \
+    ZOO_MAX_CLIENT_CNXNS=60 \
+    ZOO_STANDALONE_ENABLED=true \
+    ZOO_ADMINSERVER_ENABLED=true
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://zookeeper.apache.org/doc/r3.7.1/zookeeperStarted.html
+
+https://github.com/big-data-europe/docker-zookeeper
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+Test Commands
+- ruok
+
+- ssh
+- start client
+- ls /
+- create /class "type=online"
+- create /class/bigdata "tech"
+- get /class/bigdata
+- set /class/bigdata "technologies"
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+https://sookocheff.com/post/docker/containerizing-zookeeper-a-guided-tour/
+
+https://github.com/wurstmeister/zookeeper-docker/blob/master/Dockerfile
+
+https://github.com/31z4/zookeeper-docker/blob/master/3.8.0/Dockerfile
+
+https://github.com/big-data-europe/docker-zookeeper
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+docker run -d --rm --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 -p 8081:8080 zookeeper:latest
+
