@@ -45,15 +45,6 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
-      KAFKA_JMX_PORT: 9999
-      KAFKA_JMX_HOSTNAME: kafka
-      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote=true
-        -Djava.rmi.server.hostname=kafka
-        -Dcom.sun.management.jmxremote.local.only=false 
-        -Dcom.sun.management.jmxremote.rmi.port=9999 
-        -Dcom.sun.management.jmxremote.port=9999 
-        -Dcom.sun.management.jmxremote.authenticate=false 
-        -Dcom.sun.management.jmxremote.ssl=false"
     depends_on:
       - zookeeper
     networks:
