@@ -33,5 +33,10 @@ docker exec -it kafka bash -c "seq 42 | kafka-console-producer --request-require
 docker exec -it kafka kafka-topics --bootstrap-server kafka:9092 --topic test --describe 
 ```
 
+6. We can also consume the generated messages on this topic.
+```bash
+docker-compose exec kafka kafka-console-consumer --bootstrap-server kafka:9092 --topic test --from-beginning --max-messages 42
+```
+
 When finished, please stop/remove the containers using `docker-compose down --volumes`. 
 
