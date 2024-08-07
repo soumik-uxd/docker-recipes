@@ -47,3 +47,5 @@ docker build -t kafka-base .
 ### Tags
 The convention of tags to be used for the base image will be like `<image-name>:<java-version>-<scala-version>-<kafka-version>`
 
+## Disclaimer
+This Dockerfile is intended for testing purposes only. For production builds, use the official Apache Kafka image from [Docker Hub](https://hub.docker.com/r/apache/kafka).

@@ -47,6 +47,5 @@ docker build -t kafka-broker .
 ## Run
 Examples of usages have been provided [here](../../stacks/custom/).
 
-
-
-
+## Disclaimer
+This Dockerfile is intended for testing purposes only. For production builds, use the official Apache Kafka image from [Docker Hub](https://hub.docker.com/r/apache/kafka).
