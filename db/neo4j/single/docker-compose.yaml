@@ -1,0 +1,22 @@
+services:
+  neo4j:
+    image: neo4j:${NEO4J_VERSION:-5.26-community-bullseye}
+    volumes:
+        - neo4j-logs:/logs
+        - neo4j-config:/config
+        - neo4j-data:/data
+        - neo4j-plugins:/plugins
+    environment:
+        - NEO4J_AUTH=neo4j/password
+        - NEO4J_PLUGINS=["apoc"]
+        - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+        - NEO4J_dbms_security_procedures_allowlist=apoc.*
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    restart: always
+volumes:
+  neo4j-logs:
+  neo4j-config:
+  neo4j-data:
+  neo4j-plugins:
