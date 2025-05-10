@@ -1,0 +1,44 @@
+# Spark Docker Images Git Ignore
+
+# Ignore Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore log files
+*.log
+*.out
+*.err
+
+# Ignore temporary files
+*.swp
+*.swo
+*.tmp
+
+# Ignore build artifacts
+target/
+build/
+
+# Ignore Docker-related files
+docker-compose.override.yml
+.env
+*.env
+
+# Ignore Spark-specific temporary files
+metastore_db/
+derby.log
+spark-warehouse/
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore IntelliJ IDEA project files
+.idea/
+*.iml
+
+# Ignore VSCode settings
+.vscode/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
