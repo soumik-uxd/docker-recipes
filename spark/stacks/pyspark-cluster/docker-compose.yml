@@ -1,0 +1,71 @@
+services:
+  spark-master:
+    container_name: spark-master
+    image: pyspark
+    entrypoint: ["./entrypoint.sh", "master"]
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+    volumes:
+      - ./scripts:/opt/spark/scripts
+      - ./data:/opt/spark/data
+      - spark-logs:/opt/spark/spark-events
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MASTER_WEBUI_PORT=8080
+    ports:
+      - "8080:8080" # Spark master Web UI
+      - "7077:7077" # For spark-node-to-spark-node queries
+      - "4040:4040" # Spark worker data
+    networks:
+      - spark-net
+
+  spark-history-server:
+    container_name: spark-history
+    image: pyspark
+    entrypoint: ["./entrypoint.sh", "history"]
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    environment:
+      - SPARK_NO_DAEMONIZE=true
+      - SPARK_MODE=history
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/opt/spark/spark-events
+      - SPARK_HISTORY_OPTS=-Dspark.history.ui.port=18080
+    volumes:
+      - ./scripts:/opt/spark/scripts
+      - ./data:/opt/spark/data
+      - spark-logs:/opt/spark/spark-events
+    ports:
+      - "18080:18080"
+    networks:
+      - spark-net
+
+  spark-worker:
+    image: pyspark
+    entrypoint: ["./entrypoint.sh", "worker"]
+    depends_on:
+      spark-master:
+        condition: service_healthy
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_NO_DAEMONIZE=true
+    volumes:
+      - ./scripts:/opt/spark/scripts
+      - ./data:/opt/spark/data
+      - spark-logs:/opt/spark/spark-events
+    networks:
+      - spark-net     
+
+volumes:
+  spark-logs:
+
+networks:
+  spark-net:
+    driver: bridge
