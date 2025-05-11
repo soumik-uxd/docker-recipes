@@ -1,0 +1,2 @@
+data/retail-data.zip filter=lfs diff=lfs merge=lfs -text
+data/yellow_trip_data.zip filter=lfs diff=lfs merge=lfs -text
