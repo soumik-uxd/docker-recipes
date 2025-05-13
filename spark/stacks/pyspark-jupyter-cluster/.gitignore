@@ -50,3 +50,6 @@ data/*/*.parquet
 
 # Logs
 spark-logs/
+
+# Notebook checkpoints
+notebooks/.ipynb_checkpoints/
