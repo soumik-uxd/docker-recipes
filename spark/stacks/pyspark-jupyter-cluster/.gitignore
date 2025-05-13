@@ -48,4 +48,5 @@ data/*/*/*.csv
 data/*/*.csv
 data/*/*.parquet
 
-data/*
+# Logs
+spark-logs/
