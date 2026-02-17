@@ -1,0 +1,55 @@
+services:
+  langflow:
+    image: langflowai/langflow:${LANGFLOW_VERSION-1.7.3} 
+    container_name: langflow    
+    ports:
+      - "7860:7860"
+    depends_on:
+      langflow-postgres:
+        condition: service_healthy
+    environment:
+      - LANGFLOW_DATABASE_URL=postgresql://langflow:langflow@langflow-postgres:5432/langflow
+      # This variable defines where the logs, file storage, monitor data and secret keys are stored.
+      - LANGFLOW_CONFIG_DIR=app/langflow
+      - DATA_DIR=app/data
+      - LANGFLOW_VARIABLES_TO_GET_FROM_ENVIRONMENT=DATA_DIR,PGVECTOR_URL,AZURE_OPENAI_EMBED_KEY,AZURE_OPENAI_EMBED_ENDPOINT,AZURE_OPENAI_API_EMBED_VERSION,AZURE_OPENAI_EMBED_DEPLOYMENT
+    volumes:
+      - ./flows:/app/flows
+      - ./components:/app/custom_components
+      - langflow-data:/app/langflow
+      - ./data:/app/data
+    networks:
+      - langflow-net
+    env_file:
+      - .env
+    
+  langflow-postgres:
+    image: postgres:16-alpine
+    container_name: langflow-postgres
+    environment:
+      POSTGRES_USER: langflow
+      POSTGRES_PASSWORD: langflow
+      POSTGRES_DB: langflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - langflow-postgres:/var/lib/postgresql/data
+      #- ./scripts/initdb/load.sh:/docker-entrypoint-initdb.d/load.sh
+    networks:
+      - langflow-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+volumes:
+  langflow-postgres:
+  langflow-data:
+
+networks:
+  langflow-net:
+    name: langflow-net
+    driver: bridge
