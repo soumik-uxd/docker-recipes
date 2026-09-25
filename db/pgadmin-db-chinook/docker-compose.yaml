@@ -1,0 +1,62 @@
+services:
+  db:
+    container_name: dbserv
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - PGUSER=postgres
+      - DB_SCHEMA=media_store
+    ports:
+      - "5432:5432"
+    networks:
+      - dbnet
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./initdb/load.sh:/docker-entrypoint-initdb.d/load.sh
+      - ./initdb/sqls/:/home/sqls/
+      - ./initdb/conf/:/home/conf/
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:${PGADMIN_VERSION-9.1}
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD-root}
+    ports:
+      - "5050:80"
+    networks:
+      - dbnet
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+      - ./pgpass:/pgadmin4/pgpass # passwords for the connections in this file
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy    
+    entrypoint: >
+      /bin/sh -c "
+      cp -f /pgadmin4/pgpass /var/lib/pgadmin/;
+      chmod 600 /var/lib/pgadmin/pgpass;
+      chown pgadmin:root /var/lib/pgadmin/pgpass;
+      chown pgadmin:root /pgadmin4/servers.json;
+      /entrypoint.sh
+      "
+networks:
+  dbnet:
+    driver: bridge
+
+volumes:
+  db-data:
+  pgadmin-data:
