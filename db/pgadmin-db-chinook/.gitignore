@@ -1,0 +1,4 @@
+# Local database credentials and environment files
+/initdb/conf/*.env
+!/initdb/conf/db.env.example
+

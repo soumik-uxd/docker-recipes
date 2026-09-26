@@ -1,0 +1,68 @@
+services:
+  db:
+    container_name: dbserv
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+      - PGUSER=postgres
+      - DB_SCHEMA=media_store
+    ports:
+      - "5432:5432"
+    networks:
+      - dbnet
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./initdb/load.sh:/docker-entrypoint-initdb.d/load.sh
+      - ./initdb/sqls/:/home/sqls/
+      - ./initdb/conf/:/home/conf/
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:${PGADMIN_VERSION-9.1}
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL-admin@admin.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD-root}
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "5050:80"
+    networks:
+      - dbnet
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+      - ./pgpass:/pgadmin4/pgpass # passwords for the connections in this file
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db:
+        condition: service_healthy    
+    entrypoint: >
+      /bin/sh -c '
+      storage_user="$$(printf "%s" "$$PGADMIN_DEFAULT_EMAIL" | sed "s/@/_/g")";
+      storage_dir="/var/lib/pgadmin/storage/$$storage_user";
+      mkdir -p "$$storage_dir";
+      cp -f /pgadmin4/pgpass "$$storage_dir/pgpass";
+      chmod 600 "$$storage_dir/pgpass";
+      chown -R pgadmin:root "$$storage_dir";
+      if [ -f /var/lib/pgadmin/pgadmin4.db ]; then
+        /venv/bin/python /pgadmin4/setup.py load-servers /pgadmin4/servers.json --user "$$PGADMIN_DEFAULT_EMAIL" --replace;
+      fi;
+      exec /entrypoint.sh
+      '
+networks:
+  dbnet:
+    driver: bridge
+
+volumes:
+  db-data:
+  pgadmin-data:
