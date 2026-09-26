@@ -1,1 +1,1 @@
-host.docker.internal:5432:postgres:postgres:root
+db:5432:*:postgres:root

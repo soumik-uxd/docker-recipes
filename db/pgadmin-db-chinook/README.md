@@ -47,6 +47,10 @@ Email:    admin@admin.com
 Password: root
 ```
 
+pgAdmin is configured with `PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False`, so it does not prompt for a separate master password when opening the preconfigured database connection. The connection credentials are supplied by the mounted `pgpass` file. The pgAdmin web login itself still requires the email and password shown above.
+
+The preconfigured connection uses the Docker Compose service name `db` as its host and is available as soon as both containers are healthy. The `pgpass` file is copied to the pgAdmin storage directory for the configured login user and restricted to the pgAdmin account.
+
 The pgAdmin image version, login email and login password can be overridden with environment variables:
 ```bash
 PGADMIN_VERSION=9.1 PGADMIN_EMAIL=<PGADMIN_EMAIL> PGADMIN_PASSWORD=<PGADMIN_PASSWORD> docker compose up -d
@@ -54,5 +58,6 @@ PGADMIN_VERSION=9.1 PGADMIN_EMAIL=<PGADMIN_EMAIL> PGADMIN_PASSWORD=<PGADMIN_PASS
 
 The database schema defaults to `media_store`. To use a different schema, override `DB_SCHEMA` in `docker-compose.yaml` before the first container startup. The database initialization runs only when the PostgreSQL data volume is created. To initialize the database again after changing the schema or users, remove the `db-data` volume and start the containers again.
 
-Once the containers are ready, the database can be accessed at `postgresql://localhost:5432/chinook`. For JDBC use `jdbc:postgresql://localhost:5432/chinook`.
+If `pgadmin-data` already exists, the startup script reloads `servers.json` for the configured pgAdmin user so changes to the preconfigured connection are applied. To change the pgAdmin login email or password on an existing installation, remove the `pgadmin-data` volume as well and start the containers again.
 
+Once the containers are ready, the database can be accessed at `postgresql://localhost:5432/chinook`. For JDBC use `jdbc:postgresql://localhost:5432/chinook`.
