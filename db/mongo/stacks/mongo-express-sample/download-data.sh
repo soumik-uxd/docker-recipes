@@ -9,7 +9,7 @@ else
         SAMPLE_DATA_DIR=$(cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd) # Script directory
     fi
 fi
-echo "Sample data will be donwloaded to $SAMPLE_DATA_DIR"
+echo "Sample data will be downloaded to $SAMPLE_DATA_DIR"
 #--------------------------------------------------------------------------------------------------
 # Download the sample files from the remote repo, extract and then cleanup the zip
 #--------------------------------------------------------------------------------------------------
@@ -18,4 +18,4 @@ wget --no-verbose -O "$SAMPLE_DATA_PATH" "$SAMPLE_DATA_REPO"
 unzip -q "$SAMPLE_DATA_PATH" 'mongodb-sample-dataset-main/sample_*/*' -d "$SAMPLE_DATA_DIR" 
 mv "$SAMPLE_DATA_DIR"/mongodb-sample-dataset-main/ "$SAMPLE_DATA_DIR"/sampledata/
 rm -f "$SAMPLE_DATA_PATH"
-echo "Sample data has been donwloaded."
+echo "Sample data has been downloaded."
