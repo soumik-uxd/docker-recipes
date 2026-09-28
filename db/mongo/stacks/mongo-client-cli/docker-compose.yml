@@ -1,0 +1,46 @@
+services:
+  mongo-server:
+    image: mongo:${MONGODB_VERSION:-8.3.11-noble}
+    container_name: mongoserver
+    ports:
+      - 27017:27017
+      - 27018:27018
+    environment:
+      - MONGO_INITDB_DATABASE=test
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "mongosh --quiet --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 1)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    volumes:
+      - mongo-data:/data/db
+      - ./initdb:/docker-entrypoint-initdb.d # Init script
+    networks:
+      - mongo_net
+
+  mongo-client:
+    # build will get tagged with 'image'
+    build: ../../mongoclient-cli
+    image: mongoclient
+    container_name: mongoclient
+    environment:
+      - MONGO_SERVER=mongoserver
+      - MONGO_INITDB_DATABASE=test
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+    networks:
+      - mongo_net
+    depends_on:
+      mongo-server:
+        condition: service_healthy
+
+networks:
+  mongo_net:
+    name: mongo_net
+    driver: bridge
+
+volumes:
+  mongo-data:

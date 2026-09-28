@@ -1,0 +1,4 @@
+# Local database credentials and environment files
+*.env
+!db.env.example
+

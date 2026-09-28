@@ -1,0 +1,21 @@
+# Docker recipes for MongoDB
+
+Here one can find all the images and stacks related to [MongoDB](https://www.mongodb.com/). 
+
+**Disclaimer**
+: Please note, none of these images/stacks are fit for production usage. Please use at your own risk, assuming you are familiar with the [MongoDB ecosystem](https://mongodb-documentation.readthedocs.io/en/latest/ecosystem/#gsc.tab=0).
+
+
+# Images
+| Section     | Description |
+| ----------- | ----------- |
+| **[MongoClient CLI](./mongoclient-cli/)**      | A small image based on alpine to test a MongoDB server connection   |
+
+# Stacks 
+| Section     | Description |
+| ----------- | ----------- |
+| **[MongoClient CLI](./stacks/mongo-client-cli/)**      | Single mongo server with a CLI client container.   |
+| **[Mongo-Express Client](./stacks/mongo-express-client/)**      | Single mongo server with a [web admin interface](https://github.com/mongo-express/mongo-express)   |
+| **[MongoClient](./stacks/mongoclient/)**      | Single mongo server with a [web user interface](https://hub.docker.com/r/mongoclient/mongoclient/)   |
+| **[Mongo-Express Client Sample Data](./stacks/mongo-express-sample/)**      | Single mongo server with a [web admin interface](https://github.com/mongo-express/mongo-express) pre-loaded with [sample data](https://www.mongodb.com/developer/products/atlas/atlas-sample-datasets/#sql-atlas-sample-data-deeper-dive)  |
+| **[MongoClient Sample Data](./stacks/mongoclient-sample/)**      | Single mongo server with a [web user interface](https://hub.docker.com/r/mongoclient/mongoclient/) pre-loaded with [sample data](https://www.mongodb.com/developer/products/atlas/atlas-sample-datasets/#sql-atlas-sample-data-deeper-dive)  |

@@ -1,0 +1,24 @@
+services:
+  mongo-atlas-server:
+    image: mongodb/mongodb-atlas-local:${ATLAS_LOCAL_VERSION:-latest}
+    container_name: atlaslocal
+    hostname: atlaslocal
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_DATABASE=admin
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGODB_LOAD_SAMPLE_DATA=true
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mongo_net
+
+networks:
+  mongo_net:
+    name: mongo_net
+    driver: bridge
+
+volumes:
+  mongo-data:
