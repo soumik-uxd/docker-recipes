@@ -14,16 +14,34 @@ if [ "$MONGO_INITDB_ROOT_USERNAME" ] && [ "$MONGO_INITDB_ROOT_PASSWORD" ]; then
 fi
 
 if [[ -z "${SAMPLE_DATA_DIR:-}" ]]; then
-    SAMPLE_DATA_DIR=/tmp/data
+    SAMPLE_DATA_DIR=/tmp/data/sampledata
 fi
+
 #--------------------------------------------------------------------------------------------------
-# Import the data
+# Check if there is data inside sample data
 #--------------------------------------------------------------------------------------------------
-for directory in $(ls -1 "$SAMPLE_DATA_DIR"/sampledata/); do
-    for file in $(ls -1 "$SAMPLE_DATA_DIR"/sampledata/"$directory"/); do
-        coll=$(basename $file .json)
-        echo "Importing collection $coll for db $directory..."
-        mongoimport --drop --host localhost --port 27017 --db "$directory" --collection $coll --file $SAMPLE_DATA_DIR"/sampledata/"$directory/$file $auth
+if [[ ! -d "$SAMPLE_DATA_DIR" ]]; then
+    echo "Sample data directory does not exist: $SAMPLE_DATA_DIR"
+    echo "Skipping import"
+elif [[ -z "$(find "$SAMPLE_DATA_DIR" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
+    echo "Sample data directory is empty: $SAMPLE_DATA_DIR"
+    echo "Skipping import"
+else
+    #--------------------------------------------------------------------------------------------------
+    # Import the data
+    #--------------------------------------------------------------------------------------------------
+    for directory in $(ls -1 "$SAMPLE_DATA_DIR"/sampledata/); do
+        for file in $(ls -1 "$SAMPLE_DATA_DIR"/sampledata/"$directory"/); do
+            coll=$(basename $file .json)
+
+            # Check if the collection already exists
+            if [[ "$(mongosh --host localhost --port 27017 --db "$directory" $auth --quiet --eval "db.getCollectionNames().includes('$coll')")" == "true" ]]; then
+                echo "Collection $coll already exists in db $directory; skipping import."
+            else
+                echo "Importing collection $coll for db $directory..."
+                mongoimport --drop --host localhost --port 27017 --db "$directory" --collection $coll --file $SAMPLE_DATA_DIR"/sampledata/"$directory/$file $auth
+            fi
+        done
     done
-done
-echo "Import completed!"
+    echo "Import completed!"
+fi
