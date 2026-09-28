@@ -30,8 +30,8 @@ else
     #--------------------------------------------------------------------------------------------------
     # Import the data
     #--------------------------------------------------------------------------------------------------
-    for directory in $(ls -1 "$SAMPLE_DATA_DIR"/sampledata/); do
-        for file in $(ls -1 "$SAMPLE_DATA_DIR"/sampledata/"$directory"/); do
+    for directory in $(ls -1 "$SAMPLE_DATA_DIR"/); do
+        for file in $(ls -1 "$SAMPLE_DATA_DIR"/"$directory"/); do
             coll=$(basename $file .json)
 
             # Check if the collection already exists
@@ -39,7 +39,7 @@ else
                 echo "Collection $coll already exists in db $directory; skipping import."
             else
                 echo "Importing collection $coll for db $directory..."
-                mongoimport --drop --host localhost --port 27017 --db "$directory" --collection $coll --file $SAMPLE_DATA_DIR"/sampledata/"$directory/$file $auth
+                mongoimport --drop --host localhost --port 27017 --db "$directory" --collection $coll --file $SAMPLE_DATA_DIR"/"$directory/$file $auth
             fi
         done
     done
