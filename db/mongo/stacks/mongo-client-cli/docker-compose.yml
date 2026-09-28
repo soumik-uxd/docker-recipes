@@ -1,6 +1,6 @@
 services:
   mongo-server:
-    image: mongo:6.0.2-focal
+    image: mongodb/mongodb-community-server:${MONGODB_VERSION:-latest-slim}
     container_name: mongoserver
     ports:
       - 27017:27017
