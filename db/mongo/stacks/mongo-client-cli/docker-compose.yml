@@ -1,12 +1,6 @@
-# WARNING: This docker-compose.yml is only for testing purpose.
-# Ports:
-# - description: Single mongo server with a CLI client container.
-# - mongo-server: 27017, 27018
-version: "3.7"
 services:
   mongo-server:
     image: mongo:6.0.2-focal
-    hostname: mongoserver
     container_name: mongoserver
     ports:
       - 27017:27017
@@ -16,6 +10,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
     volumes:
+      - mongo-data:/data/db
       - ./initdb:/docker-entrypoint-initdb.d # Init script
     networks:
       - mongo_net
@@ -39,3 +34,6 @@ networks:
   mongo_net:
     name: mongo_net
     driver: bridge
+
+volumes:
+  mongo-data:

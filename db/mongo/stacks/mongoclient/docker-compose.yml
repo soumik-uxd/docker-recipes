@@ -1,5 +1,3 @@
-version: "3.7"
-   
 services:
   mongo-server:
     image: mongo:6.0.2-focal
@@ -12,6 +10,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
     volumes:
+      - mongo-data:/data/db
       - ./initdb:/docker-entrypoint-initdb.d # Init script
     networks:
       - mongo_net
@@ -31,3 +30,6 @@ networks:
   mongo_net:
     name: mongo_net
     driver: bridge
+
+volumes:
+  mongo-data:
