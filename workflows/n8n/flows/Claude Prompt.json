@@ -1,0 +1,75 @@
+{
+  "name": "Claude Prompt",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "a1d11fb5-728e-4a4f-a777-9c3b8a5a2c01",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "EU_anthropic_claude_opus_5.5",
+          "mode": "list",
+          "cachedResultName": "EU_anthropic_claude_opus_5.5"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "Give me three practical ideas for using n8n to automate repetitive work. Keep each idea to one sentence."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1d11fb5-728e-4a4f-a777-9c3b8a5a2c02",
+      "name": "Ask Claude",
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        480,
+        304
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "oyTuKxoVKZ8T5ujz",
+          "name": "Anthropic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Ask Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6dcb5e62-cc3f-4cbe-84fa-8e573c11921a",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "2c70e12b7a0646f92279f427c7b38e7334d8e5389cff167a1dc30e73f826b683"
+  },
+  "nodeGroups": [],
+  "id": "rxYX3EtalNrT6dCq",
+  "tags": []
+}

@@ -1,0 +1,109 @@
+{
+  "name": "Claude Text Summarizer",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c2d11fb5-728e-4a4f-a777-9c3b8a5a2c01",
+      "name": "When clicking ‘Test workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        240,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c2d11fb5-728e-4a4f-a777-9c3b8a5a2c02",
+              "name": "text",
+              "value": "I’ve been using this robotic vacuum cleaner for about three weeks now. At first, I struggled with setting up the Wi-Fi app, and the instruction manual wasn’t very clear on how to clean the roller brush. However, once I got it connected, it easily picked up all the pet hair on my hardwood floors and low-pile rugs. The battery lasts about 90 minutes before it automatically returns to its dock to recharge. Overall, it saves me a lot of time daily, even though the dust bin is a bit small and needs frequent emptying.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c2d11fb5-728e-4a4f-a777-9c3b8a5a2c03",
+      "name": "Set text to summarize",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "claude-haiku-4-5",
+          "mode": "list",
+          "cachedResultName": "claude-haiku-4-5"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Summarize the following text in five concise bullet points. Preserve key facts and do not add information.\n\n {{ $json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c2d11fb5-728e-4a4f-a777-9c3b8a5a2c04",
+      "name": "Summarize with Claude",
+      "type": "@n8n/n8n-nodes-langchain.anthropic",
+      "typeVersion": 1,
+      "position": [
+        704,
+        304
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "oyTuKxoVKZ8T5ujz",
+          "name": "Anthropic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Test workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set text to summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set text to summarize": {
+      "main": [
+        [
+          {
+            "node": "Summarize with Claude",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d4d7b2c2-6b53-4428-b12a-e6432b7daf2d",
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "2c70e12b7a0646f92279f427c7b38e7334d8e5389cff167a1dc30e73f826b683"
+  },
+  "nodeGroups": [],
+  "id": "V2v24bNwhJLmyTCq",
+  "tags": []
+}
