@@ -1,0 +1,13 @@
+# Env files
+.env 
+data/*
+!data/.keep
+**/venv/
+**/__pycache__/
+shared/*
+!shared/*.keep
+!shared/*.keep
+!shared/*/*.keep
+scripts/data/*
+!scripts/data/.keep
+!scripts/data/awfdb/*.keep
